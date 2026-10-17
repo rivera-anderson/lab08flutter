@@ -6,9 +6,9 @@ import 'list_products_screen.dart';
 import 'profile_screen.dart';
 import 'login_screen.dart';
 
-/// [MenuScreen] - Menú principal KROMA inspirado en la estética visual neo-grotesca oscura.
-/// Bloques de color audaces (Coral #FF6548, Periwinkle #6B7AFF, Canary Yellow #F7B944)
-/// con botones circulares de acción, tipografía contundente y barra de navegación flotante tipo píldora.
+/// [MenuScreen] - Menú central estilo iOS 18.
+/// Ofrece tarjetas reactivas con retroalimentación táctil de escala,
+/// contadores dinámicos sincronizados con el estado y diálogo de confirmación Cupertino.
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
 
@@ -17,7 +17,7 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  int _selectedNavTab = 0;
+  int? _pressedIndex;
 
   void _showLogoutConfirmation(BuildContext context) {
     showCupertinoDialog(
@@ -57,162 +57,175 @@ class _MenuScreenState extends State<MenuScreen> {
     final appState = AppState.instance;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF141518),
+      backgroundColor: const Color(0xFFF2F2F7),
       body: SafeArea(
-        child: ListenableBuilder(
-          listenable: appState,
-          builder: (context, _) {
-            final user = appState.userProfile;
-            final productCount = appState.products.length;
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: ListenableBuilder(
+            listenable: appState,
+            builder: (context, _) {
+              final user = appState.userProfile;
+              final productCount = appState.products.length;
 
-            return Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // 1. Barra superior: Avatar, Saludo y Botones circulares (estilo referencia)
-                        Row(
-                          children: [
-                            // Avatar circular con iniciales
-                            Container(
-                              width: 44,
-                              height: 44,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFFF6548),
-                                shape: BoxShape.circle,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 8),
+
+                  // 1. Tarjeta de Usuario estilo Apple ID
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(8),
+                            blurRadius: 18,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          // Avatar con gradiente y borde activo
+                          Container(
+                            width: 54,
+                            height: 54,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF007AFF), Color(0xFF5856D6)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              child: const Center(
-                                child: Text(
-                                  'JP',
-                                  style: TextStyle(
-                                    color: Color(0xFF141518),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF007AFF).withAlpha(70),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'JP',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Column(
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Hola, ${user.name.split(' ').first}!',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.3,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      user.name,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: -0.4,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    const Icon(
+                                      CupertinoIcons.checkmark_seal_fill,
+                                      color: Color(0xFF007AFF),
+                                      size: 16,
+                                    ),
+                                  ],
                                 ),
-                                const Text(
-                                  'KROMA Central Hub',
+                                const SizedBox(height: 3),
+                                Text(
+                                  user.email,
                                   style: TextStyle(
-                                    color: Color(0xFF9EA3AE),
-                                    fontSize: 12,
+                                    fontSize: 13,
+                                    color: Colors.grey.shade500,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
                             ),
-                            const Spacer(),
-
-                            // Botón circular Buscar
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (context) => const ListProductsScreen(),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  CupertinoIcons.search,
-                                  color: Color(0xFF141518),
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 18),
-
-                        // Pill de Ubicación / Empresa (como en la referencia "The Daily Grind, NY")
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF202227),
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: Colors.white.withAlpha(15),
-                              width: 1,
-                            ),
                           ),
-                          child: const Row(
-                            children: [
-                              Icon(
-                                CupertinoIcons.cube_box,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'KROMA Inventory • Store 01',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Spacer(),
-                              Icon(
-                                CupertinoIcons.chevron_down,
-                                color: Colors.white70,
-                                size: 16,
-                              ),
-                            ],
+                          const Icon(
+                            CupertinoIcons.chevron_forward,
+                            color: Color(0xFFC7C7CC),
+                            size: 20,
                           ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  // Título MENÚ
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      'MENÚ',
+                      style: TextStyle(
+                        fontSize: 34,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -1.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      'Selecciona una de las opciones disponibles',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // 2. Tarjetas Agrupadas de Navegación
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(8),
+                          blurRadius: 18,
+                          offset: const Offset(0, 4),
                         ),
-
-                        const SizedBox(height: 24),
-
-                        // Título exacto del diagrama
-                        const Text(
-                          'MENÚ',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -1.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // --------------------------------------------------
-                        // OPCIÓN 1: Registrar productos (Tarjeta Coral vibrante)
-                        // --------------------------------------------------
-                        _buildHeroMenuCard(
-                          backgroundColor: const Color(0xFFFF6548),
-                          textColor: const Color(0xFF141518),
-                          badgeText: 'NUEVO ARTÍCULO',
-                          badgeBg: Colors.black.withAlpha(25),
-                          badgeTextColor: const Color(0xFF141518),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        // Opción 1: Registrar productos
+                        _buildInteractiveMenuItem(
+                          index: 0,
                           title: 'Registrar productos',
-                          subtitle: 'Agrega nuevos productos con nombre, descripción y precio',
-                          icon: CupertinoIcons.plus_square_fill,
+                          subtitle: 'Agregar nuevos productos al inventario',
+                          icon: CupertinoIcons.plus_app_fill,
+                          iconGradient: const [Color(0xFF007AFF), Color(0xFF00C7BE)],
+                          badgeText: '+ Nuevo',
+                          badgeColor: const Color(0xFF007AFF),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -223,20 +236,20 @@ class _MenuScreenState extends State<MenuScreen> {
                           },
                         ),
 
-                        const SizedBox(height: 14),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 72),
+                          child: Divider(height: 1, thickness: 0.7),
+                        ),
 
-                        // --------------------------------------------------
-                        // OPCIÓN 2: Listar productos (Tarjeta Periwinkle Blue)
-                        // --------------------------------------------------
-                        _buildHeroMenuCard(
-                          backgroundColor: const Color(0xFF6B7AFF),
-                          textColor: Colors.white,
-                          badgeText: '$productCount DISPONIBLES',
-                          badgeBg: Colors.white.withAlpha(40),
-                          badgeTextColor: Colors.white,
+                        // Opción 2: Listar productos
+                        _buildInteractiveMenuItem(
+                          index: 1,
                           title: 'Listar productos',
-                          subtitle: 'Catálogo de artículos en almacén con precios en S/',
-                          icon: CupertinoIcons.list_bullet_indent,
+                          subtitle: 'Catálogo de artículos y precios en S/',
+                          icon: CupertinoIcons.list_bullet_below_rectangle,
+                          iconGradient: const [Color(0xFF34C759), Color(0xFF30D158)],
+                          badgeText: '$productCount items',
+                          badgeColor: const Color(0xFF34C759),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -247,20 +260,20 @@ class _MenuScreenState extends State<MenuScreen> {
                           },
                         ),
 
-                        const SizedBox(height: 14),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 72),
+                          child: Divider(height: 1, thickness: 0.7),
+                        ),
 
-                        // --------------------------------------------------
-                        // OPCIÓN 3: Perfil (Tarjeta Canary Yellow)
-                        // --------------------------------------------------
-                        _buildHeroMenuCard(
-                          backgroundColor: const Color(0xFFF7B944),
-                          textColor: const Color(0xFF141518),
-                          badgeText: 'CUENTA ACTIVA',
-                          badgeBg: Colors.black.withAlpha(25),
-                          badgeTextColor: const Color(0xFF141518),
+                        // Opción 3: Perfil
+                        _buildInteractiveMenuItem(
+                          index: 2,
                           title: 'Perfil',
-                          subtitle: 'Nombre, Correo, Teléfono y edición de usuario',
+                          subtitle: 'Gestionar información de la cuenta',
                           icon: CupertinoIcons.person_crop_circle_fill,
+                          iconGradient: const [Color(0xFF5856D6), Color(0xFFAF52DE)],
+                          badgeText: 'Verificado',
+                          badgeColor: const Color(0xFF5856D6),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -270,218 +283,151 @@ class _MenuScreenState extends State<MenuScreen> {
                             );
                           },
                         ),
-
-                        const SizedBox(height: 14),
-
-                        // --------------------------------------------------
-                        // OPCIÓN 4: Logout (Tarjeta Carbón Mate con botón circular)
-                        // --------------------------------------------------
-                        _buildHeroMenuCard(
-                          backgroundColor: const Color(0xFF202227),
-                          textColor: Colors.white,
-                          badgeText: 'SESIÓN',
-                          badgeBg: const Color(0xFFFF453A).withAlpha(40),
-                          badgeTextColor: const Color(0xFFFF6548),
-                          title: 'Logout',
-                          subtitle: 'Cerrar la sesión de usuario activa',
-                          icon: CupertinoIcons.square_arrow_left_fill,
-                          isLogout: true,
-                          onTap: () => _showLogoutConfirmation(context),
-                        ),
-
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
-                ),
 
-                // 2. Barra de Navegación Flotante tipo Píldora (como en la imagen de referencia)
-                Container(
-                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 14),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF202227),
-                    borderRadius: BorderRadius.circular(36),
-                    border: Border.all(
-                      color: Colors.white.withAlpha(20),
-                      width: 1,
+                  const SizedBox(height: 20),
+
+                  // 3. Opción 4: Logout (Tarjeta destructiva con micro-escala)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(8),
+                          blurRadius: 18,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(90),
-                        blurRadius: 20,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+                    child: _buildInteractiveMenuItem(
+                      index: 3,
+                      title: 'Logout',
+                      subtitle: 'Finalizar sesión de usuario actual',
+                      icon: CupertinoIcons.square_arrow_left_fill,
+                      iconGradient: const [Color(0xFFFF3B30), Color(0xFFFF453A)],
+                      isDestructive: true,
+                      onTap: () => _showLogoutConfirmation(context),
+                    ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildNavIcon(0, CupertinoIcons.house_fill, 'Inicio', () {}),
-                      _buildNavIcon(1, CupertinoIcons.plus_app, 'Registrar', () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => const AddProductScreen(),
-                          ),
-                        );
-                      }),
-                      _buildNavIcon(2, CupertinoIcons.square_list, 'Listar', () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => const ListProductsScreen(),
-                          ),
-                        );
-                      }),
-                      _buildNavIcon(3, CupertinoIcons.person, 'Perfil', () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => const ProfileScreen(),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
+                  const SizedBox(height: 16),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildNavIcon(int index, IconData icon, String label, VoidCallback onTap) {
-    final isSelected = _selectedNavTab == index;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() => _selectedNavTab = index);
-        onTap();
-      },
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF6B7AFF) : Colors.transparent,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.white : const Color(0xFF9EA3AE),
-          size: 22,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeroMenuCard({
-    required Color backgroundColor,
-    required Color textColor,
-    required String badgeText,
-    required Color badgeBg,
-    required Color badgeTextColor,
+  Widget _buildInteractiveMenuItem({
+    required int index,
     required String title,
     required String subtitle,
     required IconData icon,
+    required List<Color> iconGradient,
     required VoidCallback onTap,
-    bool isLogout = false,
+    String? badgeText,
+    Color? badgeColor,
+    bool isDestructive = false,
   }) {
+    final isPressed = _pressedIndex == index;
+
     return GestureDetector(
+      onTapDown: (_) => setState(() => _pressedIndex = index),
+      onTapUp: (_) => setState(() => _pressedIndex = null),
+      onTapCancel: () => setState(() => _pressedIndex = null),
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: [
-            BoxShadow(
-              color: backgroundColor == const Color(0xFF202227)
-                  ? Colors.black.withAlpha(50)
-                  : backgroundColor.withAlpha(70),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Badge pill
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: badgeBg,
-                      borderRadius: BorderRadius.circular(20),
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedScale(
+        scale: isPressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+          child: Row(
+            children: [
+              // Contenedor de ícono con gradiente y esquinas curvadas
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: iconGradient,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(13),
+                  boxShadow: [
+                    BoxShadow(
+                      color: iconGradient.first.withAlpha(60),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
                     ),
-                    child: Text(
-                      badgeText,
+                  ],
+                ),
+                child: Icon(icon, color: Colors.white, size: 23),
+              ),
+              const SizedBox(width: 15),
+
+              // Textos
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
                       style: TextStyle(
-                        color: badgeTextColor,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: isDestructive
+                            ? const Color(0xFFFF3B30)
+                            : Colors.black,
+                        letterSpacing: -0.3,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-                  // Título principal
-                  Text(
-                    title,
+              // Badge informativo si existe
+              if (badgeText != null && badgeColor != null)
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: badgeColor.withAlpha(30),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    badgeText,
                     style: TextStyle(
-                      color: textColor,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.6,
+                      color: badgeColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                ),
 
-                  // Subtítulo
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: textColor.withAlpha(isLogout ? 160 : 200),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      height: 1.25,
-                    ),
-                  ),
-                ],
+              // Chevron de navegación iOS
+              Icon(
+                CupertinoIcons.chevron_forward,
+                color: isDestructive
+                    ? const Color(0xFFFF3B30).withAlpha(140)
+                    : const Color(0xFFC7C7CC),
+                size: 18,
               ),
-            ),
-            const SizedBox(width: 14),
-
-            // Botón circular blanco o acentuado con flecha diagonal como en la referencia (↗)
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: isLogout ? const Color(0xFFFF453A).withAlpha(40) : Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(20),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Icon(
-                isLogout ? CupertinoIcons.square_arrow_left : CupertinoIcons.arrow_up_right,
-                color: isLogout ? const Color(0xFFFF6548) : const Color(0xFF141518),
-                size: 20,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

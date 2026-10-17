@@ -7,36 +7,76 @@ void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color(0xFF141518),
-      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
     ),
   );
-  runApp(const KromaApp());
+  runApp(const MyApp());
 }
 
-class KromaApp extends StatelessWidget {
-  const KromaApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'KROMA',
+      title: 'NEXUS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF141518),
-        fontFamily: 'SF Pro Display',
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFFF6548),
-          surface: Color(0xFF202227),
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF007AFF),
+          brightness: Brightness.light,
         ),
+        scaffoldBackgroundColor: const Color(0xFFF2F2F7),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color(0xFFF2F2F7),
           elevation: 0,
-          scrolledUnderElevation: 0,
+          scrolledUnderElevation: 0.5,
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.white),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.4,
+          ),
+          iconTheme: IconThemeData(color: Color(0xFF007AFF)),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade200),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade200),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFF007AFF), width: 2),
+          ),
+          hintStyle: TextStyle(
+            color: Colors.grey.shade400,
+            fontSize: 16,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF007AFF),
+            foregroundColor: Colors.white,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.2,
+            ),
+          ),
         ),
       ),
       home: const LoginScreen(),
