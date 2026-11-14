@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../models/product.dart';
+import '../models/product_images.dart';
 import '../models/user_profile.dart';
 
 /// [AppState] Administrador reactivo global tipo Singleton.
@@ -32,6 +33,7 @@ class AppState extends ChangeNotifier {
         category: 'Computadoras',
         icon: CupertinoIcons.device_laptop,
         color: const Color(0xFF007AFF),
+        imageUrl: ProductImages.laptop,
       ),
       Product(
         id: '2',
@@ -41,6 +43,7 @@ class AppState extends ChangeNotifier {
         category: 'Accesorios',
         icon: CupertinoIcons.device_laptop,
         color: const Color(0xFF5856D6),
+        imageUrl: ProductImages.mouse,
       ),
       Product(
         id: '3',
@@ -50,6 +53,7 @@ class AppState extends ChangeNotifier {
         category: 'Accesorios',
         icon: CupertinoIcons.keyboard,
         color: const Color(0xFFFF9500),
+        imageUrl: ProductImages.keyboard,
       ),
       Product(
         id: '4',
@@ -59,6 +63,7 @@ class AppState extends ChangeNotifier {
         category: 'Pantallas',
         icon: CupertinoIcons.tv,
         color: const Color(0xFF34C759),
+        imageUrl: ProductImages.monitor,
       ),
     ]);
   }
@@ -70,6 +75,7 @@ class AppState extends ChangeNotifier {
     String category = 'Electrónica',
     IconData icon = CupertinoIcons.cube_box,
     Color color = const Color(0xFF007AFF),
+    String? imageUrl,
   }) {
     final newProduct = Product(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -79,6 +85,7 @@ class AppState extends ChangeNotifier {
       category: category,
       icon: icon,
       color: color,
+      imageUrl: imageUrl,
     );
 
     _products.insert(0, newProduct);
